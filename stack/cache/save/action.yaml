@@ -24,6 +24,7 @@ runs:
         else
           echo "work-cache-prefix=${{inputs.work-cache-prefix}}" >> "$GITHUB_ENV"
         fi
+        echo github.action_path=${{github.action_path}}
 
     - name: check stack caches
       id: check-stack
