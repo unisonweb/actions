@@ -28,7 +28,7 @@ runs:
 
     - name: check stack caches
       id: check-stack
-      uses: ./stack/cache/restore
+      uses: unisonweb/actions/stack/cache/restore@main
       with:
         cache-prefix: ${{inputs.cache-prefix}}
         work-cache-prefix: ${{env.work-cache-prefix}}
