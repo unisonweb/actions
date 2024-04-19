@@ -11,7 +11,7 @@ inputs:
   stack-yaml-dir:
     description: The directory to search for `stack.yaml`
     required: false
-    default: '.'
+    default: "."
 
 runs:
   using: composite
