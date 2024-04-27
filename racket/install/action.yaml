@@ -43,7 +43,7 @@ runs:
 
     - name: cache Racket installation (Linux)
       id: cache-linux
-      if: ${{inputs.cached}} == 'true' && runner.os == 'Linux'
+      if: inputs.cached == 'true' && runner.os == 'Linux'
       uses: actions/cache@v2
       with:
         path: |
@@ -53,7 +53,7 @@ runs:
 
     - name: cache Racket installation (macOS)
       id: cache-macos
-      if: ${{inputs.cached}} == 'true' && runner.os == 'macOS'
+      if: inputs.cached == 'true' && runner.os == 'macOS'
       uses: actions/cache@v2
       with:
         path: |
@@ -63,7 +63,7 @@ runs:
 
     - name: cache Racket installation (Windows)
       id: cache-windows
-      if: ${{inputs.cached}} == 'true' && runner.os == 'Windows'
+      if: inputs.cached == 'true' && runner.os == 'Windows'
       uses: actions/cache@v2
       with:
         path: |
