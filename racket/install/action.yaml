@@ -41,7 +41,57 @@ runs:
         fi
         echo "racket_arch=$racket_arch" >> $GITHUB_ENV
 
+    - name: cache Racket installation (Linux)
+      id: cache-linux
+      if: ${{inputs.cached}} == 'true' && runner.os == 'Linux'
+      uses: actions/cache@v2
+      with:
+        path: |
+          /usr/*/racket
+          ~/.local/*/racket
+        key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
+
+    - name: cache Racket installation (macOS)
+      id: cache-macos
+      if: ${{inputs.cached}} == 'true' && runner.os == 'macOS'
+      uses: actions/cache@v2
+      with:
+        path: |
+          /Applications/Racket
+          ~/Library/Racket
+        key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
+
+    - name: cache Racket installation (Windows)
+      id: cache-windows
+      if: ${{inputs.cached}} == 'true' && runner.os == 'Windows'
+      uses: actions/cache@v2
+      with:
+        path: |
+          C:\Program Files\Racket\
+          C:\Users\runneradmin\AppData\Roaming\Racket\
+        key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
+
+    - name: add Racket to path (Linux)
+      if: steps.cache-linux.outputs.cache-hit == 'true'
+      shell: bash
+      run: echo "/usr/racket/bin" >> $GITHUB_PATH
+
+    - name: add Racket to path (macOS)
+      if: steps.cache-macos.outputs.cache-hit == 'true'
+      shell: bash
+      run: echo "/Applications/Racket/bin" >> $GITHUB_PATH
+
+    - name: add Racket to path (Windows)
+      if: steps.cache-windows.outputs.cache-hit == 'true'
+      shell: bash
+      run: echo "/c/Program Files/Racket" >> $GITHUB_PATH
+
     - uses: Bogdanp/setup-racket@v1.11
+      if: |
+        ${{inputs.cached}} != 'true' || \
+        (steps.cache-linux.outputs.cache-hit != 'true' && \
+         steps.cache-macos.outputs.cache-hit != 'true' && \
+         steps.cache-windows.outputs.cache-hit != 'true')
       with:
         architecture: ${{env.racket_arch}}
         distribution: ${{inputs.distribution}}
@@ -50,7 +100,7 @@ runs:
 
     - name: add x509 thing
       shell: bash
-      run: raco pkg install --auto x509
+      run: raco pkg install --auto --skip-installed x509
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
