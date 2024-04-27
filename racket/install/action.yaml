@@ -10,8 +10,8 @@ inputs:
     required: true
   variant:
     description: "'CS' for Chez Scheme or 'BC' for Racket Before Chez"
-    required: true
-    default: "CS"
+    required: false
+    default: CS
   distribution:
     description: "'full' or 'minimal'"
     required: true
