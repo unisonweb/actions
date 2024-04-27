@@ -1,0 +1,57 @@
+# Reference:
+# https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+
+name: "Install Racket"
+description: "Install Racket for Linux, macOS, and Windows"
+
+inputs:
+  version:
+    description: The version of Racket to install, e.g. 8.11 or 'stable' or 'pre-release'
+    required: true
+  variant:
+    description: "'CS' for Chez Scheme or 'BC' for Racket Before Chez"
+    required: true
+    default: "CS"
+  distribution:
+    description: "'full' or 'minimal'"
+    required: true
+    default: full
+  cached:
+    description: "Whether to try to cache the installation"
+    required: false
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - name: set up environment
+      shell: bash
+      run: |
+        if [[ ${{runner.arch}} = 'X64' ]]; then
+          racket_arch="x64"
+        elif [[ ${{runner.arch}} = 'ARM64' ]]; then
+          racket_arch="arm64"
+        elif [[ ${{runner.arch}} = 'X86' ]]; then
+          racket_arch="x86"
+        elif [[ ${{runner.arch}} = 'ARM' ]]; then
+          racket_arch="arm32"
+        else
+          echo "Unsupported architecture: ${{runner.arch}}"
+          exit 1
+        fi
+        echo "racket_arch=$racket_arch" >> $GITHUB_ENV
+
+    - uses: Bogdanp/setup-racket@v1.11
+      with:
+        architecture: ${{env.racket_arch}}
+        distribution: ${{inputs.distribution}}
+        variant: ${{inputs.variant}}
+        version: ${{inputs.version}}
+
+    - name: add x509 thing
+      shell: bash
+      run: raco pkg install --auto x509
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }}
