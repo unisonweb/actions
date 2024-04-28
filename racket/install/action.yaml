@@ -44,7 +44,7 @@ runs:
     - name: cache Racket installation (Linux)
       id: cache-linux
       if: inputs.cached == 'true' && runner.os == 'Linux'
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: |
           /usr/*/racket
@@ -54,7 +54,7 @@ runs:
     - name: cache Racket installation (macOS)
       id: cache-macos
       if: inputs.cached == 'true' && runner.os == 'macOS'
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: |
           /Applications/Racket
@@ -64,7 +64,7 @@ runs:
     - name: cache Racket installation (Windows)
       id: cache-windows
       if: inputs.cached == 'true' && runner.os == 'Windows'
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: |
           C:\Program Files\Racket\
