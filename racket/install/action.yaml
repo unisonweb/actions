@@ -43,7 +43,8 @@ runs:
 
     - name: cache Racket installation (Linux)
       id: cache-linux
-      if: inputs.cached == 'true' && runner.os == 'Linux'
+      # caching doesn't work here without extra work, due to https://github.com/actions/cache/issues/133
+      if: false && inputs.cached == 'true' && runner.os == 'Linux'
       uses: actions/cache@v4
       with:
         path: |
