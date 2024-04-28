@@ -97,6 +97,3 @@ runs:
         distribution: ${{inputs.distribution}}
         variant: ${{inputs.variant}}
         version: ${{inputs.version}}
-
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
