@@ -45,7 +45,7 @@ runs:
       id: cache-linux
       # caching doesn't work here without extra work, due to https://github.com/actions/cache/issues/133
       if: false && inputs.cached == 'true' && runner.os == 'Linux'
-      uses: actions/cache@v4
+      uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4
       with:
         path: |
           /usr/*/racket
@@ -55,7 +55,7 @@ runs:
     - name: cache Racket installation (macOS)
       id: cache-macos
       if: inputs.cached == 'true' && runner.os == 'macOS'
-      uses: actions/cache@v4
+      uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4
       with:
         path: |
           /Applications/Racket
@@ -65,7 +65,7 @@ runs:
     - name: cache Racket installation (Windows)
       id: cache-windows
       if: inputs.cached == 'true' && runner.os == 'Windows'
-      uses: actions/cache@v4
+      uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4
       with:
         path: |
           C:\Program Files\Racket\
@@ -87,7 +87,7 @@ runs:
       shell: bash
       run: echo "/c/Program Files/Racket" >> $GITHUB_PATH
 
-    - uses: Bogdanp/setup-racket@v1.11
+    - uses: Bogdanp/setup-racket@0094a9d8bd157633293a2210f373bb542687fa6d # v1.11
       if: |
         ${{inputs.cached}} != 'true' || \
         (steps.cache-linux.outputs.cache-hit != 'true' && \

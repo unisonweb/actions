@@ -53,7 +53,7 @@ runs:
         grep resolver ${{inputs.stack-yaml-dir}}/stack.yaml | awk '{print "resolver="$2}' >> "$GITHUB_ENV"
 
     - name: restore ~/.stack (non-Windows)
-      uses: buildjet/cache/restore@v4
+      uses: buildjet/cache/restore@3e70d19e31d6a8030aeddf6ed8dbe601f94d09f4 # v4
       id: cache-stack-unix
       if: runner.os != 'Windows'
       with:
@@ -63,7 +63,7 @@ runs:
         restore-keys: ${{inputs.cache-prefix}}-stack-${{runner.os}}_${{env.resolver}}-
 
     - name: restore ~/.stack (Windows)
-      uses: buildjet/cache/restore@v4
+      uses: buildjet/cache/restore@3e70d19e31d6a8030aeddf6ed8dbe601f94d09f4 # v4
       id: cache-stack-windows
       if: runner.os == 'Windows'
       with:
@@ -75,7 +75,7 @@ runs:
         restore-keys: ${{inputs.cache-prefix}}-stack-${{runner.os}}_${{env.resolver}}-
 
     - name: restore .stack-work
-      uses: buildjet/cache/restore@v4
+      uses: buildjet/cache/restore@3e70d19e31d6a8030aeddf6ed8dbe601f94d09f4 # v4
       id: cache-stack-work
       with:
         lookup-only: ${{inputs.lookup-only}}
