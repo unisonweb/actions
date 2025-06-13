@@ -49,7 +49,6 @@ runs:
       with:
         path: |
           /usr/*/racket
-          ~/.local/*/racket
         key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
 
     - name: cache Racket installation (macOS)
@@ -59,7 +58,6 @@ runs:
       with:
         path: |
           /Applications/Racket
-          ~/Library/Racket
         key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
 
     - name: cache Racket installation (Windows)
@@ -69,7 +67,6 @@ runs:
       with:
         path: |
           C:\Program Files\Racket\
-          C:\Users\runneradmin\AppData\Roaming\Racket\
         key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
 
     - name: add Racket to path (Linux)
