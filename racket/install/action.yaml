@@ -49,7 +49,7 @@ runs:
       with:
         path: |
           /usr/*/racket
-        key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
+        key: ${{runner.os}}-${{runner.arch}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
 
     - name: cache Racket installation (macOS)
       id: cache-macos
@@ -58,7 +58,7 @@ runs:
       with:
         path: |
           /Applications/Racket
-        key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
+        key: ${{runner.os}}-${{runner.arch}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
 
     - name: cache Racket installation (Windows)
       id: cache-windows
@@ -67,7 +67,7 @@ runs:
       with:
         path: |
           C:\Program Files\Racket\
-        key: ${{runner.os}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
+        key: ${{runner.os}}-${{runner.arch}}-racket-${{inputs.version}}-${{inputs.variant}}-${{inputs.distribution}}
 
     - name: add Racket to path (Linux)
       if: steps.cache-linux.outputs.cache-hit == 'true'
@@ -86,7 +86,7 @@ runs:
 
     - uses: Bogdanp/setup-racket@0094a9d8bd157633293a2210f373bb542687fa6d # v1.11
       if: |
-        ${{inputs.cached}} != 'true' || \
+        inputs.cached != 'true' || \
         (steps.cache-linux.outputs.cache-hit != 'true' && \
          steps.cache-macos.outputs.cache-hit != 'true' && \
          steps.cache-windows.outputs.cache-hit != 'true')
