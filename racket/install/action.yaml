@@ -86,9 +86,9 @@ runs:
 
     - uses: Bogdanp/setup-racket@0094a9d8bd157633293a2210f373bb542687fa6d # v1.11
       if: |
-        inputs.cached != 'true' || \
-        (steps.cache-linux.outputs.cache-hit != 'true' && \
-         steps.cache-macos.outputs.cache-hit != 'true' && \
+        inputs.cached != 'true' ||
+        (steps.cache-linux.outputs.cache-hit != 'true' &&
+         steps.cache-macos.outputs.cache-hit != 'true' &&
          steps.cache-windows.outputs.cache-hit != 'true')
       with:
         architecture: ${{env.racket_arch}}
