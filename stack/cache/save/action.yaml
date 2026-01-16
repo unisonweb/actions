@@ -3,11 +3,11 @@ description: save ~/.stack and .stack-work caches on Linux, macOS, and Windows
 
 inputs:
   cache-prefix:
-    description: The cache prefix to use for `~/.stack`, e.g. "release" or "ci"
+    description: The cache prefix to use for external packages in `~/.stack`
     required: true
   work-cache-prefix:
-    description: The cache prefix to use for `**/.stack-work`, defaults to the same as `cache-prefix`
-    required: false
+    description: The cache prefix to use for local packages in `**/.stack-work`
+    required: true
   stack-yaml-dir:
     description: The directory to search for `stack.yaml`
     required: false
@@ -31,7 +31,7 @@ runs:
       uses: unisonweb/actions/stack/cache/restore@main
       with:
         cache-prefix: ${{inputs.cache-prefix}}
-        work-cache-prefix: ${{env.work-cache-prefix}}
+        work-cache-prefix: ${{inputs.work-cache-prefix}}
         stack-yaml-dir: ${{inputs.stack-yaml-dir}}
         lookup-only: true
 
@@ -71,4 +71,4 @@ runs:
       with:
         path: |
           **/.stack-work
-        key: ${{env.work-cache-prefix}}-stack-work-${{runner.os}}-${{runner.arch}}_${{env.resolver}}-${{hashFiles('**/stack.yaml', '**/package.yaml')}}-${{hashFiles('**/*.hs')}}
+        key: ${{inputs.work-cache-prefix}}-stack-work-${{runner.os}}-${{runner.arch}}_${{env.resolver}}-${{hashFiles('**/stack.yaml', '**/package.yaml')}}-${{hashFiles('**/*.hs')}}
