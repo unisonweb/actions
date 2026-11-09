@@ -9,13 +9,20 @@ inputs:
     description: The version of stack to install, e.g. 2.9.1
     required: true
     default: 2.9.1
+  token:
+    description: >
+      The token to download the release with. The job's own token is enough,
+      since Stack's releases are public; it gives the download the workflow
+      repository's rate limit instead of the one anonymous requests from a
+      runner share.
+    required: false
+    default: ${{ github.token }}
 
 runs:
   using: composite
   steps:
-    - name: install stack
+    - name: name the stack release
       shell: bash
-      working-directory: ${{ runner.temp }}
       run: |
         if [[ ${{runner.os}} = 'Windows' ]]; then
           stack_os="windows"
@@ -35,8 +42,34 @@ runs:
           echo "Unsupported architecture: ${{runner.arch}}"
           exit 1
         fi
+        echo "stack_release=stack-${{inputs.stack-version}}-${stack_os}-${stack_arch}" >> $GITHUB_ENV
 
-        mkdir stack && cd stack
-        curl -L https://github.com/commercialhaskell/stack/releases/download/v${{inputs.stack-version}}/stack-${{inputs.stack-version}}-${stack_os}-${stack_arch}.tar.gz | tar -xz
-        echo "$PWD/stack-"* >> $GITHUB_PATH
-        echo "stack_path=$PWD/stack-"* >> $GITHUB_ENV
+    # Once a job has downloaded this release, later jobs take it from the
+    # cache and don't reach the release server at all.
+    - name: restore stack from the cache
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/stack
+        key: stack-install-${{ env.stack_release }}
+
+    - name: install stack
+      shell: bash
+      working-directory: ${{ runner.temp }}
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        mkdir -p stack && cd stack
+        if [[ ! -d "$stack_release" ]]; then
+          archive="$stack_release.tar.gz"
+          # Authenticated first; then anonymously, with retries. --fail makes an
+          # error response an error, instead of bytes handed to tar.
+          gh release download "v${{inputs.stack-version}}" --repo commercialhaskell/stack \
+              --pattern "$archive" --output "$archive" --clobber \
+            || curl --fail --location --retry 5 --retry-all-errors --retry-delay 10 --output "$archive" \
+              "https://github.com/commercialhaskell/stack/releases/download/v${{inputs.stack-version}}/$archive"
+          tar -xzf "$archive"
+          rm "$archive"
+        fi
+        echo "$PWD/$stack_release" >> $GITHUB_PATH
+        echo "stack_path=$PWD/$stack_release" >> $GITHUB_ENV
